@@ -17,3 +17,6 @@ nx g @nx/react:setup-tailwind --project=landing-page
 nx serve landing-page
 
 https://nx.dev/concepts/more-concepts/micro-frontend-architecture  
+
+nx g @nx/react:host shell --remotes=blog,profile
+
