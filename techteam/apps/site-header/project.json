@@ -1,0 +1,79 @@
+{
+  "name": "site-header",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/site-header/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/site-header",
+        "index": "apps/site-header/src/index.html",
+        "baseHref": "/",
+        "main": "apps/site-header/src/main.tsx",
+        "tsConfig": "apps/site-header/tsconfig.app.json",
+        "assets": [
+          "apps/site-header/src/favicon.ico",
+          "apps/site-header/src/assets"
+        ],
+        "styles": ["apps/site-header/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "apps/site-header/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/site-header/src/environments/environment.ts",
+              "with": "apps/site-header/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "site-header:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "site-header:build:development"
+        },
+        "production": {
+          "buildTarget": "site-header:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/site-header/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
