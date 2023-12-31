@@ -34,6 +34,9 @@
           "codeCoverage": true
         }
       }
+    },
+    "server": {
+      "cache": true
     }
   },
   "namedInputs": {
@@ -66,6 +69,19 @@
         "linter": "eslint",
         "unitTestRunner": "jest"
       }
+    },
+    "@nx/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "playwright"
+    },
+    "@nx/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nx/angular:component": {
+      "style": "scss"
     }
   },
   "nxCloudAccessToken": "MDM0NTEwOWEtMjgyMC00OWNiLWE3MGUtNjI3YWU2NGYyMzU1fHJlYWQtd3JpdGU="
