@@ -15,7 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@techteam/widgets": ["libs/widgets/src/index.ts"]
+      "@techteam/load-remote-module": ["load-remote-module/src/index.ts"],
+      "@techteam/services": ["libs/src/index.ts"],
+      "@techteam/widgets": ["libs/widgets/src/index.ts"],
+      "collobrate/Module": ["collobrate/src/remote-entry.ts"],
+      "register/Module": ["register/src/remote-entry.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,33 @@
+{
+  "name": "load-remote-module",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "load-remote-module/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/load-remote-module",
+        "main": "load-remote-module/src/index.ts",
+        "tsConfig": "load-remote-module/tsconfig.lib.json",
+        "assets": [],
+        "project": "load-remote-module/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "load-remote-module/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
