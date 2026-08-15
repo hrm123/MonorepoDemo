@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>WhatsApp Group Lookup (Baileys)</title>
+<style>
+  body { font-family: sans-serif; max-width: 480px; margin: 40px auto; text-align: center; color: #222; }
+  img { margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+  input, button { padding: 8px; font-size: 16px; }
+  #groupSection { display: none; text-align: left; margin-top: 24px; }
+  li { margin: 4px 0; }
+  #statusText { color: #666; }
+</style>
+</head>
+<body>
+
+<h1>WhatsApp Group Lookup</h1>
+
+<div id="qrSection">
+  <p id="statusText">Starting WhatsApp client...</p>
+  <img id="qrImg" style="display:none" width="264" height="264" alt="WhatsApp linking QR code"/>
+</div>
+
+<div id="groupSection">
+  <p>Connected ✅</p>
+  <label>Group name: <input id="groupInput" placeholder="e.g. Family Trip 2026"/></label>
+  <button onclick="loadGroup()">Get participants</button>
+  <ul id="participantsList"></ul>
+  <p id="groupError" style="color:red"></p>
+</div>
+
+<script>
+async function poll() {
+  const res = await fetch('/api/status');
+  const data = await res.json();
+  const statusText = document.getElementById('statusText');
+  const qrImg = document.getElementById('qrImg');
+
+  if (data.status === 'ready') {
+    document.getElementById('qrSection').style.display = 'none';
+    document.getElementById('groupSection').style.display = 'block';
+    return; // stop polling once ready
+  }
+
+  if (data.status === 'qr' && data.qrDataUrl) {
+    statusText.textContent = 'Open WhatsApp on your phone → Settings → Linked Devices → Link a Device, then scan:';
+    qrImg.src = data.qrDataUrl;
+    qrImg.style.display = 'inline';
+  } else if (data.status === 'authenticated') {
+    statusText.textContent = 'Authenticated — finishing sync...';
+    qrImg.style.display = 'none';
+  } else if (data.status === 'disconnected') {
+    statusText.textContent = 'Disconnected. Restart the server to log in again.';
+    qrImg.style.display = 'none';
+    return; // stop polling
+  } else {
+    statusText.textContent = 'Starting WhatsApp client...';
+  }
+
+  setTimeout(poll, 2000);
+}
+
+async function loadGroup() {
+  const name = document.getElementById('groupInput').value.trim();
+  const list = document.getElementById('participantsList');
+  const err = document.getElementById('groupError');
+  list.innerHTML = '';
+  err.textContent = '';
+  if (!name) return;
+
+  const res = await fetch(`/api/groups/${encodeURIComponent(name)}/participants`);
+  const data = await res.json();
+  if (!res.ok) {
+    err.textContent = data.error + (data.availableGroups ? ` — available: ${data.availableGroups.join(', ')}` : '');
+    return;
+  }
+  data.participants.forEach((p) => {
+    const li = document.createElement('li');
+    const namePart = p.name ? `${p.name} — ` : '';
+    const idPart = p.isPhoneNumber ? p.number : `${p.number} (WhatsApp ID — number hidden)`;
+    li.textContent = `${namePart}${idPart}${p.isAdmin ? ' — admin' : ''}`;
+    list.appendChild(li);
+  });
+}
+
+poll();
+</script>
+</body>
+</html>
